@@ -1,0 +1,137 @@
+﻿<Application
+    x:Class="刷呀.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:刷呀"
+    RequestedTheme="Light">
+    <Application.Resources>
+
+        <!--#region 主标题样式-->
+        <Style x:Key="Main_Title_Re_Style" TargetType="RelativePanel">
+            <Setter Property="Background" Value="#FF3AB1B5"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+            <Setter Property="VerticalAlignment" Value="Stretch"></Setter>
+            <Setter Property="Padding" Value="3,3,0,5"></Setter>
+            <Setter Property="Grid.Row" Value="0"></Setter>
+            <Setter Property="Grid.Column" Value="0"></Setter>
+            <Setter Property="Grid.ColumnSpan" Value="2"></Setter>
+        </Style>
+
+        <Style x:Key="Title_Style" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Microsoft JhengHei Light"></Setter>
+            <Setter Property="FontSize" Value="25"></Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+        </Style>
+
+        <Style x:Key="Main_Title_Style" TargetType="TextBlock" BasedOn="{StaticResource Title_Style}">
+            <Setter Property="Margin" Value="3,0,0,0"></Setter>
+            <Setter Property="RelativePanel.AlignVerticalCenterWithPanel" Value="True"></Setter>
+            <Setter Property="RelativePanel.RightOf" Value="menu"></Setter>
+        </Style>
+
+        <Style x:Name="Pane_Main_Title_Style" TargetType="TextBlock" BasedOn="{StaticResource Title_Style}">
+            <Setter Property="Margin" Value="3,0,0,0"></Setter>
+            <Setter Property="RelativePanel.AlignVerticalCenterWithPanel" Value="True"></Setter>
+            <Setter Property="RelativePanel.AlignLeftWithPanel" Value="True"></Setter>
+        </Style>
+
+        <Style x:Key="WebView_Main_Title_Style" TargetType="TextBlock" BasedOn="{StaticResource Title_Style}">
+            <Setter Property="Margin" Value="3,5,5,5"></Setter>
+            <Setter Property="RelativePanel.AlignHorizontalCenterWithPanel" Value="True"></Setter>
+        </Style>
+        <!--#endregion-->
+
+        <!--#region ListView样式-->
+        <Style x:Key="ListView_Style" TargetType="ListView">
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"></Setter>
+            <Setter Property="IsItemClickEnabled" Value="True"></Setter>
+        </Style>
+
+        <Style x:Key="Main_ListView_Style" TargetType="ListView" BasedOn="{StaticResource ListView_Style}">
+            <Setter Property="Background" Value="#FFF1F5FA"></Setter>
+        </Style>
+
+        <Style x:Key="Pane_ListView_Style" TargetType="ListView" BasedOn="{StaticResource ListView_Style}">
+            <Setter Property="Margin" Value="0,5,0,0"></Setter>
+        </Style>
+        <!--#endregion-->
+
+        <!--#region ListViewItem样式-->
+        <Style x:Key="ListViewItem_Style" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <ListViewItemPresenter />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="Main_ListViewItem_Style" TargetType="ListViewItem" BasedOn="{StaticResource ListViewItem_Style}">
+            <Setter Property="BorderBrush" Value="#FFE6E9EE"></Setter>
+            <Setter Property="BorderThickness" Value="1"></Setter>
+            <Setter Property="Margin" Value="3,8,3,0"></Setter>
+            <Setter Property="Background" Value="White"></Setter>
+        </Style>
+
+        <Style x:Key="Pane_ListViewItem_Style" TargetType="ListViewItem" BasedOn="{StaticResource ListViewItem_Style}">
+            <Setter Property="Padding" Value="10,0,10,0"></Setter>
+        </Style>
+        <!--#endregion-->
+        
+        <!--#region 刷呀新闻的ListView的ItemTemplate的DataTemplate-->
+        
+        <!--#region 没有图片的新闻的DataTemplate-->
+        <DataTemplate x:Key="News_Without_Photo">
+            <RelativePanel Padding="5,10,5,10" ManipulationMode="System,TranslateX">
+                <TextBlock x:Name="news_title" Text="{Binding title}" TextWrapping="Wrap" TextTrimming="WordEllipsis" FontSize="17" FontWeight="Bold" RelativePanel.AlignTopWithPanel="True"></TextBlock>
+                <TextBlock x:Name="news_source" Text="{Binding source}" Foreground="Gray" FontSize="12" RelativePanel.Below="news_title"></TextBlock>
+                <TextBlock x:Name="pubdate" Text="{Binding pubDate}" Foreground="Gray" FontSize="12" Margin="5,0,0,0" RelativePanel.Below="news_title" RelativePanel.RightOf="news_source"></TextBlock>
+                <TextBlock x:Name="desc" Text="{Binding desc}" Foreground="#FF404040" TextWrapping="Wrap" TextTrimming="WordEllipsis" FontSize="15" LineHeight="3" CharacterSpacing="80" RelativePanel.Below="news_source"></TextBlock>
+            </RelativePanel>
+        </DataTemplate>
+        <!--#endregion-->
+        
+        <!--#region 有图片的新闻的DataTemplate-->
+        <DataTemplate x:Name="News_With_Photo">
+            <RelativePanel Padding="5,10,5,10" ManipulationMode="System,TranslateX">
+                <TextBlock x:Name="news_title" Text="{Binding title}" TextWrapping="Wrap" TextTrimming="WordEllipsis" FontSize="17" FontWeight="Bold" RelativePanel.AlignTopWithPanel="True"></TextBlock>
+                <TextBlock x:Name="news_source" Text="{Binding source}" Foreground="Gray" FontSize="12" RelativePanel.Below="news_title"></TextBlock>
+                <TextBlock x:Name="pubdate" Text="{Binding pubDate}" Foreground="Gray" FontSize="12" Margin="5,0,0,0" RelativePanel.Below="news_title" RelativePanel.RightOf="news_source"></TextBlock>
+                <TextBlock x:Name="desc" Text="{Binding desc}" Foreground="#FF404040" TextWrapping="Wrap" TextTrimming="WordEllipsis" FontSize="15" LineHeight="3" CharacterSpacing="80" RelativePanel.Below="news_source"></TextBlock>
+                <Image x:Name="imageurl" Source="{Binding Path=imageurls}" Stretch="Uniform" Margin="0,10,0,0" RelativePanel.Below="desc"></Image>
+            </RelativePanel>
+        </DataTemplate>
+        <!--#endregion-->
+        
+        <!--#endregion-->
+        
+
+        <!--#region 刷呀笑话的ListView的ItemTemplate的DataTemplate-->
+        
+        <!--#region 笑话DataTemplate1:文字笑话-->
+        <DataTemplate x:Key="Jokes_Text">
+            <RelativePanel Padding="5,10,5,10" ManipulationMode="System,TranslateX">
+                <TextBlock x:Name="title" Text="{Binding title}" TextWrapping="Wrap" TextTrimming="WordEllipsis" FontSize="17" FontWeight="Bold" RelativePanel.AlignTopWithPanel="True"></TextBlock>
+                <TextBlock x:Name="ct" Text="{Binding ct}" Foreground="Gray" FontSize="12" RelativePanel.Below="title"></TextBlock>
+                <TextBlock x:Name="text" Text="{Binding text}" Foreground="#FF404040" TextWrapping="Wrap" TextTrimming="WordEllipsis" FontSize="15" LineHeight="3" CharacterSpacing="80" RelativePanel.Below="ct"></TextBlock>
+            </RelativePanel>
+        </DataTemplate>
+        <!--#endregion-->
+
+        <!--#region 笑话DataTemplate2:图片笑话-->
+        <DataTemplate x:Key="Jokes_Img">
+            <RelativePanel Padding="5,10,5,10" ManipulationMode="System,TranslateX">
+                <TextBlock x:Name="title" Text="{Binding title}" TextWrapping="Wrap" TextTrimming="WordEllipsis" FontSize="17" FontWeight="Bold" RelativePanel.AlignTopWithPanel="True"></TextBlock>
+                <TextBlock x:Name="ct" Text="{Binding ct}" Foreground="Gray" FontSize="12" RelativePanel.Below="title"></TextBlock>
+                <Image x:Name="img" Source="{Binding Path=img}" Stretch="Uniform" Margin="0,10,0,0" RelativePanel.Below="ct"></Image>
+            </RelativePanel>
+        </DataTemplate>
+        <!--#endregion-->
+        
+        <!--#endregion-->
+        
+    </Application.Resources>
+</Application>

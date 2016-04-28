@@ -1,0 +1,235 @@
+﻿<Page
+    x:Class="刷呀.TravelListsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:刷呀"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"    
+    xmlns:refresh="using:PullToRefresh.UWP"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <local:Travellists_startTime_Converter x:Key="st_converter"></local:Travellists_startTime_Converter>
+        <local:Travellists_routeDays_Converter x:Key="rd_converter"></local:Travellists_routeDays_Converter>
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <!--#region 主界面的行列定义-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3.5*"></ColumnDefinition>
+            <ColumnDefinition Width="2.5*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <!--#endregion-->
+
+        <!--#region PC端适配-->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="VisualState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Travellists_Re.Grid.ColumnSpan" Value="1"></Setter>
+                        <Setter Target="Changeable_Frame.Visibility" Value="Visible"></Setter>
+                        <Setter Target="Wheather_Grid.Visibility" Value="Collapsed"></Setter>
+                        <Setter Target="Settings_Grid.Gird.Column" Value="0"></Setter>
+                        <Setter Target="Settings_Grid.Grid.ColumnSpan" Value="2"></Setter>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <!--#endregion-->
+
+        <!--#region WeatherPage和WebViewPage显示区域-->
+        <Frame x:Name="Changeable_Frame" Grid.Row="1" Grid.Column="1" Visibility="Collapsed"></Frame>
+        <!--#endregion-->
+
+        <!--#region 标题栏布局-->
+        <Grid x:Name="Main_Title_Re" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <RelativePanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource Main_Title_Re_Style}">
+
+                <!--#region 汉堡菜单按钮-->
+                <Button x:Name="menu" Background="Transparent" Width="45" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Click="menu_Click">
+                    <Path Stroke="White" StrokeThickness="2" Height="30" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="None">
+                        <Path.Data>
+                            <GeometryGroup>
+                                <LineGeometry StartPoint="0,8" EndPoint="25,8"></LineGeometry>
+                                <LineGeometry StartPoint="0,15" EndPoint="50,15"></LineGeometry>
+                                <LineGeometry StartPoint="0,22" EndPoint="50,22"></LineGeometry>
+                            </GeometryGroup>
+                        </Path.Data>
+                    </Path>
+                </Button>
+                <!--#endregion-->
+
+                <TextBlock x:Name="main_title" Text="刷呀游记" Style="{StaticResource Main_Title_Style}"></TextBlock>
+                <RelativePanel RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignRightWithPanel="True">
+                    <TextBox x:Name="Search_Box" PlaceholderText="搜索" Width="120" Margin="0,4,0,4" BorderBrush="Transparent" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" KeyDown="Search_Box_KeyDown"></TextBox>
+                    <AppBarButton x:Name="Search_Appbut" Height="35" Width="35" Margin="0,0,2,0" RelativePanel.RightOf="Search_Box" Icon="Find" Foreground="White" Click="Search_Appbut_Click"></AppBarButton>
+                </RelativePanel>
+            </RelativePanel>
+        </Grid>
+        <!--#endregion-->
+
+        <!--#region 游记列表布局-->
+        <Grid x:Name="Travellists_Re" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <refresh:PullToRefreshBox x:Name="Refresh_Box" RefreshInvoked="Refresh_Box_RefreshInvoked">
+                <!--下拉刷新控件-->
+                <Grid>
+                    <ListView x:Name="travellists_listview" Style="{StaticResource Main_ListView_Style}" ItemContainerStyle="{StaticResource Main_ListViewItem_Style}" ItemClick="travellists_listview_ItemClick" ContainerContentChanging="travellists_listview_ContainerContentChanging">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <RelativePanel Grid.Row="0" Padding="5,10,5,0" ManipulationMode="System,TranslateX">
+
+                                        <!--#region 精华-->
+                                        <TextBlock x:Name="Elite_tx" Text="精华" FontSize="12" Foreground="Gray" Margin="0,0,5,0" RelativePanel.LeftOf="Elite" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignVerticalCenterWith="Elite" Visibility="{Binding IsElite}"></TextBlock>
+                                        <SymbolIcon x:Name="Elite" Symbol="Favorite" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignRightWithPanel="True" Visibility="{Binding IsElite}"></SymbolIcon>
+                                        <!--#endregion-->
+
+                                        <!--#region 用户头像和用户名-->
+                                        <Image x:Name="userHeadImg" Source="{Binding Path=userHeadImg}" Height="48" Width="48" Stretch="Uniform" Margin="0,0,0,5" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignTopWithPanel="True"></Image>
+                                        <TextBlock x:Name="userName" Text="{Binding userName}" FontSize="15" FontWeight="Bold" Margin="10,0,0,0" RelativePanel.RightOf="userHeadImg" RelativePanel.AlignVerticalCenterWith="userHeadImg"></TextBlock>
+                                        <!--#endregion-->
+
+                                        <!--#region 游记标题-->
+                                        <TextBlock x:Name="title" Text="{Binding title}" FontSize="17" FontWeight="Bold" TextTrimming="WordEllipsis" TextWrapping="Wrap" Margin="0,0,0,2" RelativePanel.Below="userHeadImg"></TextBlock>
+                                        <!--#endregion-->
+
+                                        <!--#region 旅行时间和天数-->
+                                        <TextBlock x:Name="startTime" Text="{Binding startTime,Converter={StaticResource st_converter}}" FontSize="12" Foreground="Gray" RelativePanel.Below="title"></TextBlock>
+
+                                        <TextBlock x:Name="routeDays" Text="{Binding routeDays,Converter={StaticResource rd_converter}}" FontSize="12" Foreground="Gray" Margin="10,0,0,0" RelativePanel.RightOf="startTime" RelativePanel.Below="title"></TextBlock>
+                                        <!--#endregion-->
+
+                                        <!--#region 游记图片-->
+                                        <Image x:Name="headImage" Source="{Binding Path=headImage}" Stretch="Uniform" Margin="0,10,0,10" RelativePanel.Below="startTime"></Image>
+                                        <!--#endregion-->
+
+                                        <!--#region 概略内容-->
+                                        <TextBlock x:Name="text" Text="{Binding text}" Foreground="#FF404040" FontSize="15" FontFamily="Microsoft YaHei Light" CharacterSpacing="80" TextTrimming="WordEllipsis" TextWrapping="Wrap" LineHeight="3" Margin="0,0,0,10" RelativePanel.Below="headImage"></TextBlock>
+                                        <!--#endregion-->
+
+                                        <!--#region 分割线-->
+                                        <Line x:Name="split_line" Fill="Gray" Stroke="#FFE6E9EE" StrokeThickness="1" X1="0" Y1="0" X2="1" Y2="0" Stretch="Fill" Margin="0,0,0,10" RelativePanel.Below="text"></Line>
+                                        <!--#endregion-->
+
+                                    </RelativePanel>
+                                    
+                                    <!--#region 底端UI-->
+                                    <Grid Grid.Row="1" Padding="10,0,10,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!--#region 阅读数-->
+                                        <RelativePanel Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                                            <SymbolIcon x:Name="View" Symbol="View" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"></SymbolIcon>
+                                            <TextBlock x:Name="viewCount" Text="{Binding viewCount}" FontSize="12" Foreground="Gray" Margin="5,0,0,0" RelativePanel.RightOf="View" RelativePanel.AlignVerticalCenterWithPanel="True"></TextBlock>
+                                        </RelativePanel>
+                                        <!--#endregion-->
+
+                                        <!--#region 分割线1-->
+                                        <Line x:Name="split_line1" Grid.Column="0" Stroke="#FFE6E9EE" StrokeThickness="1" X1="0" Y1="0" X2="0" Y2="22" Stretch="Fill" HorizontalAlignment="Right"></Line>
+                                        <!--#endregion-->
+
+                                        <!--#region 喜欢数-->
+                                        <RelativePanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                                            <SymbolIcon x:Name="Like" Symbol="Like" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"></SymbolIcon>
+                                            <TextBlock x:Name="likeCount" Text="{Binding likeCount}" FontSize="12" Foreground="Gray" Margin="5,0,0,0" RelativePanel.RightOf="Like" RelativePanel.AlignVerticalCenterWithPanel="True"></TextBlock>
+                                        </RelativePanel>
+                                        <!--#endregion-->
+
+                                        <!--#region 分割线2-->
+                                        <Line x:Name="split_line2" Grid.Column="1" Stroke="#FFE6E9EE" StrokeThickness="1" X1="0" Y1="0" X2="0" Y2="22" Stretch="Fill" HorizontalAlignment="Right"></Line>
+                                        <!--#endregion-->
+
+                                        <!--#region 评论数-->
+                                        <RelativePanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                                            <SymbolIcon x:Name="Comment" Symbol="Comment" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"></SymbolIcon>
+                                            <TextBlock x:Name="commentCount" Text="{Binding commentCount}" FontSize="12" Foreground="Gray" Margin="5,0,0,0" RelativePanel.RightOf="Comment" RelativePanel.AlignVerticalCenterWithPanel="True"></TextBlock>
+                                        </RelativePanel>
+                                        <!--#endregion-->
+
+                                    </Grid>
+                                    <!--#endregion-->
+                                    
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <ProgressBar x:Name="prs" VerticalAlignment="Bottom" IsIndeterminate="True" Foreground="Gray" Visibility="Collapsed"></ProgressBar>
+                </Grid>
+            </refresh:PullToRefreshBox>
+        </Grid>
+        <!--#endregion-->
+
+        <!--#region 底部导航栏-->
+        <CommandBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+            <AppBarButton x:Name="News" Icon="AllApps" Label="刷呀新闻" Click="News_Click"></AppBarButton>
+            <AppBarButton x:Name="Jokes" Icon="Emoji" Label="刷呀笑话" Click="Jokes_Click"></AppBarButton>
+            <AppBarSeparator></AppBarSeparator>
+            <AppBarButton x:Name="To_Top" Icon="Up" Label="回到顶部" Click="To_Top_Click"></AppBarButton>
+        </CommandBar>
+        <!--#endregion-->
+
+        <SplitView x:Name="splitview" Grid.Row="1" Grid.RowSpan="2" OpenPaneLength="200">
+
+            <!--#region 汉堡菜单里的内容-->
+            <SplitView.Pane>
+                <Grid Background="#FF3AB1B5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="50"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <ListView x:Name="pane_listview" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource Pane_ListView_Style}" ItemClick="pane_listview_ItemClick">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <RelativePanel Padding="0,12,5,12">
+                                    <TextBlock Text="{Binding province}" FontSize="18" FontFamily="Microsoft YaHei Light" Foreground="White" RelativePanel.AlignLeftWithPanel="True"></TextBlock>
+                                </RelativePanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    
+                    <Grid x:Name="Wheather_Grid" Grid.Row="1" Grid.Column="0" Visibility="Visible">
+                        <Button x:Name="Wheather" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="White" Background="Transparent" Click="Wheather_Click">
+                            <RelativePanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <FontIcon x:Name="font_whe" FontSize="20" FontFamily="Segoe MDL2 Assets" Glyph="&#xE753;" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"></FontIcon>
+                                <TextBlock Text="天气" FontSize="15" RelativePanel.Below="font_whe" RelativePanel.AlignHorizontalCenterWithPanel="True"></TextBlock>
+                            </RelativePanel>
+                        </Button>
+                    </Grid>
+                    <Grid x:Name="Settings_Grid" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1">
+                        <Button x:Name="Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="White" Background="Transparent" Click="Settings_Click">
+                            <RelativePanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <FontIcon x:Name="font_set" FontSize="20" FontFamily="Segoe MDL2 Assets" Glyph="&#xE115;" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"></FontIcon>
+                                <TextBlock Text="设置" FontSize="15" RelativePanel.Below="font_set" RelativePanel.AlignHorizontalCenterWithPanel="True"></TextBlock>
+                            </RelativePanel>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </SplitView.Pane>
+            <!--#endregion-->
+
+        </SplitView>
+
+    </Grid>
+</Page>

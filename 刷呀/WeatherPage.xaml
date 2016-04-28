@@ -1,0 +1,52 @@
+﻿<Page
+    x:Class="刷呀.WeatherPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:刷呀"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="#FFF1F5FA">
+        
+        <!--#region 行列定义-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <!--#endregion-->
+
+        <!--#region PC端适配-->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600"></AdaptiveTrigger>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Title_Sp.Background" Value="Transparent"></Setter>
+                        <Setter Target="title.Foreground" Value="#FF7BA3A8"></Setter>
+                        <Setter Target="title.FontWeight" Value="SemiBold"></Setter>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <!--#endregion-->
+        
+        <StackPanel x:Name="Title_Sp" Grid.Row="0" Background="#FF3AB1B5" Margin="0,0,0,10">
+            <TextBlock x:Name="title" Text="刷呀天气" Foreground="White" FontSize="25" FontWeight="Normal" Margin="0,10,0,10" HorizontalAlignment="Center"></TextBlock>
+        </StackPanel>
+        <ProgressRing x:Name="roading" Grid.Row="1" Grid.RowSpan="2" IsActive="True" Foreground="#FF7BA3A8" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center"></ProgressRing>
+        <TextBlock x:Name="close" Grid.Row="1" Text="天气已关闭" Foreground="#FF7BA3A8" FontSize="30" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+        <RelativePanel x:Name="Body_Re" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <TextBlock x:Name="city" Text="" Foreground="#FF7BA3A8" FontSize="25" RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True" FontWeight="SemiBold"></TextBlock>
+            <TextBlock x:Name="date" Text="" Foreground="#FF7BA3A8" FontSize="25" RelativePanel.Below="city" RelativePanel.AlignHorizontalCenterWithPanel="True"></TextBlock>
+            <TextBlock x:Name="time" Text="" Foreground="#FF7BA3A8" FontSize="25" RelativePanel.Below="date" RelativePanel.AlignHorizontalCenterWithPanel="True"></TextBlock>
+            <TextBlock x:Name="temp" Text="" Foreground="#FF7BA3A8" FontSize="150" RelativePanel.Below="time" RelativePanel.AlignHorizontalCenterWithPanel="True"></TextBlock>
+            <TextBlock x:Name="temp_c" Text="°" Foreground="#FF7BA3A8" FontSize="100" RelativePanel.RightOf="temp" RelativePanel.AlignTopWith="temp" Visibility="Collapsed"></TextBlock>
+            <TextBlock x:Name="low_temp" Text="" Foreground="#FF7BA3A8" FontSize="50" RelativePanel.Below="temp" RelativePanel.AlignLeftWith="temp"></TextBlock>
+            <TextBlock x:Name="high_temp" Text="" Foreground="#FF7BA3A8" FontSize="50" RelativePanel.Below="temp" RelativePanel.AlignRightWith="temp"></TextBlock>
+            <TextBlock x:Name="weather_info" Text="" Foreground="#FF7BA3A8" FontSize="50" RelativePanel.Below="low_temp" RelativePanel.AlignHorizontalCenterWithPanel="True"></TextBlock>
+        </RelativePanel>
+    </Grid>
+</Page>
